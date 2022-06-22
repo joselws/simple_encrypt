@@ -40,3 +40,27 @@ def decrypt(num_steps: int, encrypted_text: str) -> str:
         ascii_decimal = ord(char) - num_steps
         decrypted_text += chr(ascii_decimal)
     return decrypted_text
+
+def get_cli_parameters(cli_parameters: list) -> tuple:
+    """
+    
+    """
+
+    try:
+        num_steps = int(cli_parameters[1])
+        filename = cli_parameters[2]
+        output_file = cli_parameters[3]
+    except IndexError:
+        print("Not enough parameters given.")
+        raise
+    except ValueError:
+        print("Number of steps must be an integer.")
+        raise
+    except:
+        print("Uncatched error.")
+        raise
+    else:
+        if not filename or not output_file:
+            print("Input and/or output filenames can't be empty.")
+            raise ValueError
+        return num_steps, filename, output_file
