@@ -1,6 +1,5 @@
 from encryption import encrypt, get_cli_parameters
 import sys
-import os
 
 
 def encrypt_file() -> None:
@@ -12,7 +11,7 @@ def encrypt_file() -> None:
     CLI args:
         num_steps (int): number of steps ahead <input_file> will be encrypted
         input_file (str): name of an existing file with the content you want to encrypt
-        output_file (str): name of the output file name with the encrypted content on input_file
+        output_file (str): name of the output file name with the encrypted content of input_file
     """
 
     try:

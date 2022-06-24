@@ -1,5 +1,4 @@
 from encryption import encrypt, decrypt, get_cli_parameters
-from encrypt_file import encrypt_file
 import os
 import unittest
 
@@ -171,6 +170,33 @@ class TestEncryption(unittest.TestCase):
             encrypted_content = file.read()
 
         self.assertEqual(encrypted_content, 'cdefg')
+    
+    def test_decrypt_file_check_file_created(self):
+        """File created with decrypt file"""
+
+        os.system("python3 encrypt_file.py 2 test_text.txt test_encrypted_text.txt")
+        os.system("python3 decrypt_file.py 2 test_encrypted_text.txt test_decrypted_text.txt")
+        
+        self.assertTrue(os.path.exists("test_decrypted_text.txt"))
+
+    def test_decrypt_file_bad_input(self):
+        """Trigger exception to check if file was not created"""
+
+        os.system("python3 encrypt_file.py 2 test_text.txt test_encrypted_text.txt")
+        os.system("python3 decrypt_file.py 2 not_exists.txt test_decrypted_text.txt")
+
+        self.assertFalse(os.path.exists("test_decrypted_text.txt"))
+
+    def test_decrypt_file_contents(self):
+        """Contents of output file is decrypted"""
+        
+        os.system("python3 encrypt_file.py 2 test_text.txt test_encrypted_text.txt")
+        os.system("python3 decrypt_file.py 2 test_encrypted_text.txt test_decrypted_text.txt")
+         
+        with open("test_decrypted_text.txt") as file:
+            decrypted_content = file.read()
+
+        self.assertEqual(decrypted_content, 'abcde')
     
 
 if __name__ == '__main__':
