@@ -1,3 +1,5 @@
+import os
+
 def encrypt(num_steps: int, text: str) -> str:
     """
     Encrypt a text using Caesar cypher method
@@ -43,7 +45,18 @@ def decrypt(num_steps: int, encrypted_text: str) -> str:
 
 def get_cli_parameters(cli_parameters: list) -> tuple:
     """
-    
+    Helper function for encrypt_file and decrypt_file programs.
+    Handles the validation and extraction of CLI parameters
+
+    Args:
+        cli_parameters (list): originated by passing in sys.argv,
+            takes the first three arguments which are:
+            int: number of steps of the encryption/decryption process
+            str: input filename
+            str: output filename
+
+    Returns:
+        tuple (int, str, str): the three arguments described above
     """
 
     try:
@@ -63,4 +76,9 @@ def get_cli_parameters(cli_parameters: list) -> tuple:
         if not filename or not output_file:
             print("Input and/or output filenames can't be empty.")
             raise ValueError
+    
+        if not os.path.exists(filename):
+            print(f"File {filename} does not exist.")
+            raise FileNotFoundError
+
         return num_steps, filename, output_file
