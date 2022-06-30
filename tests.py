@@ -7,17 +7,11 @@ class TestEncryption(unittest.TestCase):
     """Tests for encryption module"""
 
     def tearDown(self):
-        """Delete test encrypted and decrypted files"""
+        """Reset the test.txt file"""
 
-        encrypted_filename = 'test_encrypted_text.txt'
-        decrypted_filename = 'test_decrypted_text.txt'
+        with open('test_text.txt', 'w') as file:
+            file.write('abcde')
 
-        if os.path.exists(encrypted_filename):
-            os.remove(encrypted_filename)
-
-        if os.path.exists(decrypted_filename):
-            os.remove(decrypted_filename)
-    
 
     def test_encrypt(self):
         """Encrypt method works correctly"""
@@ -95,41 +89,40 @@ class TestEncryption(unittest.TestCase):
 
     def test_get_cli_parameters(self):
         """cli parameters function working correctly"""
-        cli_params = ['_', 5, 'test_text.txt', 'output.txt']
-        num_steps, filename, output_file = get_cli_parameters(cli_params)
+        cli_params = ['_', 5, 'test_text.txt']
+        num_steps, filename = get_cli_parameters(cli_params)
         
         self.assertEqual(num_steps, 5)
         self.assertEqual(filename, 'test_text.txt')
-        self.assertEqual(output_file, 'output.txt')
 
     def test_get_cli_parameters_incomplete_parameters(self):
         """Raise index error if all parameters are not given"""
-        cli_params = ['_', 5, 'test_text.txt']
+        cli_params = ['_', 5]
 
         with self.assertRaises(IndexError):
-            num_steps, filename, output_file = get_cli_parameters(cli_params)
+            num_steps, filename = get_cli_parameters(cli_params)
     
     def test_get_cli_parameters_type_errors(self):
         """Raise value error if num_steps is not an int"""
-        cli_params = ['_', 'error', 'test_text.txt', 'output.txt']
+        cli_params = ['_', 'error', 'test_text.txt']
 
         with self.assertRaises(ValueError):
-            num_steps, filename, output_file = get_cli_parameters(cli_params)
+            num_steps, filename = get_cli_parameters(cli_params)
     
     def test_get_cli_parameters_empty_strings(self):
         """Raise value error if all parameters are not given"""
-        cli_params = ['_', 5, '', '']
+        cli_params = ['_', 5, '']
 
         with self.assertRaises(ValueError):
-            num_steps, filename, output_file = get_cli_parameters(cli_params)
+            num_steps, filename = get_cli_parameters(cli_params)
 
     def test_get_cli_parameters_input_file_exists(self):
         """Raise file not found error if filename doesn't exist"""
 
-        cli_params = ['_', 5, 'not_exists.txt', 'output.txt']
+        cli_params = ['_', 5, 'not_exists.txt']
 
         with self.assertRaises(FileNotFoundError):
-            num_steps, filename, output_file = get_cli_parameters(cli_params)
+            num_steps, filename = get_cli_parameters(cli_params)
         self.assertFalse(os.path.exists('not_exists.txt'))
 
     def test_test_file_exists(self):
@@ -147,53 +140,23 @@ class TestEncryption(unittest.TestCase):
         
         self.assertEqual(contents, 'abcde')
     
-    def test_encrypt_file_check_file_created(self):
-        """File created with encrypt file"""
-
-        os.system("python3 encrypt_file.py 2 test_text.txt test_encrypted_text.txt")
-        
-        self.assertTrue(os.path.exists("test_encrypted_text.txt"))
-
-    def test_encrypt_file_bad_input(self):
-        """Trigger exception to check if file was not created"""
-
-        os.system("python3 encrypt_file.py 2 not_exists.txt test_encrypted_text.txt")
-        
-        self.assertFalse(os.path.exists("test_encrypted_text.txt"))
-
     def test_encrypt_file_contents(self):
         """Contents of output file is encrypted"""
         
-        os.system("python3 encrypt_file.py 2 test_text.txt test_encrypted_text.txt")
+        os.system("python3 encrypt_file.py 2 test_text.txt")
         
-        with open("test_encrypted_text.txt") as file:
+        with open("test_text.txt") as file:
             encrypted_content = file.read()
 
         self.assertEqual(encrypted_content, 'cdefg')
     
-    def test_decrypt_file_check_file_created(self):
-        """File created with decrypt file"""
-
-        os.system("python3 encrypt_file.py 2 test_text.txt test_encrypted_text.txt")
-        os.system("python3 decrypt_file.py 2 test_encrypted_text.txt test_decrypted_text.txt")
-        
-        self.assertTrue(os.path.exists("test_decrypted_text.txt"))
-
-    def test_decrypt_file_bad_input(self):
-        """Trigger exception to check if file was not created"""
-
-        os.system("python3 encrypt_file.py 2 test_text.txt test_encrypted_text.txt")
-        os.system("python3 decrypt_file.py 2 not_exists.txt test_decrypted_text.txt")
-
-        self.assertFalse(os.path.exists("test_decrypted_text.txt"))
-
     def test_decrypt_file_contents(self):
         """Contents of output file is decrypted"""
         
-        os.system("python3 encrypt_file.py 2 test_text.txt test_encrypted_text.txt")
-        os.system("python3 decrypt_file.py 2 test_encrypted_text.txt test_decrypted_text.txt")
+        os.system("python3 encrypt_file.py 2 test_text.txt")
+        os.system("python3 decrypt_file.py 2 test_text.txt")
          
-        with open("test_decrypted_text.txt") as file:
+        with open("test_text.txt") as file:
             decrypted_content = file.read()
 
         self.assertEqual(decrypted_content, 'abcde')

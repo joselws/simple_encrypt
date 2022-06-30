@@ -53,16 +53,14 @@ def get_cli_parameters(cli_parameters: list) -> tuple:
             takes the first three arguments which are:
             int: number of steps of the encryption/decryption process
             str: input filename
-            str: output filename
 
     Returns:
-        tuple (int, str, str): the three arguments described above
+        tuple (int, str): the two arguments described above
     """
 
     try:
         num_steps = int(cli_parameters[1])
         filename = cli_parameters[2]
-        output_file = cli_parameters[3]
     except IndexError:
         print("Not enough parameters given.")
         raise
@@ -73,12 +71,12 @@ def get_cli_parameters(cli_parameters: list) -> tuple:
         print("Uncatched error.")
         raise
     else:
-        if not filename or not output_file:
-            print("Input and/or output filenames can't be empty.")
+        if not filename:
+            print("Input filenames can't be empty.")
             raise ValueError
     
         if not os.path.exists(filename):
             print(f"File {filename} does not exist.")
             raise FileNotFoundError
 
-        return num_steps, filename, output_file
+        return num_steps, filename
