@@ -7,6 +7,14 @@ import unittest
 class TestGetCLIParameters(unittest.TestCase):
     """Tests for get_cli_parameters function"""
 
+    def tearDown(self):
+        """Delete extra files"""
+
+        for test_file in ["test_text2.txt", "test_text3.txt"]:
+            if os.path.exists(test_file):
+                os.remove(test_file)
+
+
     def test_correct_cli_params(self):
         """Function works correctly with minimum valid list elements"""
 
@@ -73,6 +81,93 @@ class TestGetCLIParameters(unittest.TestCase):
 
         os.remove("test_text2.txt")
         os.remove("test_text3.txt")
+
+
+class TestCipher(unittest.TestCase):
+    """Tests for the cipher function"""
+
+    def test_cipher_encrypt_action_works_correctly(self):
+        """Encrypt action type works correctly"""
+
+        action = "encrypt"
+        key = 2
+        text = "abcde"
+
+        self.assertEqual(cipher(action, key, text), "cdefg")
+
+    def test_cipher_decrypt_action_works_correctly(self):
+        """Decrypt action type works correctly"""
+
+        action = "decrypt"
+        key = 2
+        text = "cdefg"
+
+        self.assertEqual(cipher(action, key, text), "abcde")
+
+    def test_cipher_key(self):
+        """Key parameter works with any integer"""
+
+        action = "encrypt"
+        key = 1
+        text = "abcde"
+        self.assertEqual(cipher(action, key, text), "bcdef")
+
+        key = 3
+        self.assertEqual(cipher(action, key, text), "defgh")
+
+    def test_text_type(self):
+        """Text can only be a string"""
+
+        action = "encrypt"
+        key = 1
+        text = 20
+
+        with self.assertRaises(CipherError):
+            cipher(action, key, text)
+
+    def test_text_empty(self):
+        """Text cannot be empty"""
+
+        action = "encrypt"
+        key = 1
+        text = ""
+
+        with self.assertRaises(CipherError):
+            cipher(action, key, text)
+
+    def test_key_only_positive(self):
+        """Key can only be a non-zero positive number"""
+
+        action = "encrypt"
+        key = -1
+        text = "abcde"
+
+        with self.assertRaises(CipherError):
+            cipher(action, key, text)
+
+        key = 0
+        with self.assertRaises(CipherError):
+            cipher(action, key, text)
+
+    def test_key_type(self):
+        """Key value can only be int"""
+
+        action = "encrypt"
+        key = "1"
+        text = "abcde"
+
+        with self.assertRaises(CipherError):
+            cipher(action, key, text)
+
+    def test_invalid_action(self):
+        """Action type can only be encrypt or decrypt"""
+
+        action = "test"
+        key = 1
+        text = "abcde"
+
+        with self.assertRaises(CipherError):
+            cipher(action, key, text)
 
 if __name__ == '__main__':
     unittest.main()
