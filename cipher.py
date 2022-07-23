@@ -28,6 +28,7 @@ def cipher(action: str, key: int, text: str) -> str:
 
     return "".join(chr(ord(character) + key) for character in text)
 
+
 def get_cli_parameters(cli_parameters: list) -> tuple:
     """
     Helper function for cipher_file program.
@@ -62,9 +63,5 @@ def get_cli_parameters(cli_parameters: list) -> tuple:
     filenames = cli_parameters[2:]
     if not any(os.path.exists(filename) for filename in filenames):
         raise FileNotFoundError("A file was not found.")
-
-    # for filename in filenames:
-    #     if not os.path.exists(filename):
-    #         raise FileNotFoundError(f"File {filename} not found.")
 
     return (action, key, filenames)

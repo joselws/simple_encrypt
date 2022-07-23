@@ -169,5 +169,90 @@ class TestCipher(unittest.TestCase):
         with self.assertRaises(CipherError):
             cipher(action, key, text)
 
+
+class TestCipherFile(unittest.TestCase):
+    """Tests for the cipher_file.py file"""
+
+    def tearDown(self):
+        """Delete extra files"""
+
+        for test_file in ["test_text2.txt", "test_text3.txt"]:
+            if os.path.exists(test_file):
+                os.remove(test_file)
+
+        if os.path.exists("test_text.txt"):
+            with open("test_text.txt", "w") as test_file:
+                test_file.write("abcde")
+
+    def test_cipher_encrypt_file_works_correclty(self):
+        """Cipher file encrypts the file correctly"""
+
+        command = "python3 cipher_file.py encrypt 2 test_text.txt"
+        os.system(command)
+
+        with open("test_text.txt") as test_file:
+            encrypted_content = test_file.read()
+
+        self.assertEqual(encrypted_content, "cdefg")
+
+    def test_cipher_decrypt_file_works_correclty(self):
+        """Cipher file decrypts the file correctly"""
+
+        with open("test_text.txt", "w") as test_file:
+            test_file.write("cdefg")
+
+        command = "python3 cipher_file.py decrypt 2 test_text.txt"
+        os.system(command)
+
+        with open("test_text.txt") as test_file:
+            decrypted_content = test_file.read()
+
+        self.assertEqual(decrypted_content, "abcde")
+
+    def test_cipher_multiple_files(self):
+        """Command ciphers multiple files consecutively"""
+
+        with open("test_text2.txt", "w") as test_file:
+            test_file.write("12345")
+        
+        with open("test_text3.txt", "w") as test_file:
+            test_file.write("ABCDE")
+
+        cipher = "python3 cipher_file.py encrypt 2 test_text.txt test_text2.txt test_text3.txt"
+        os.system(cipher)
+
+        with open("test_text.txt") as test_file:
+            content1 = test_file.read()
+        
+        with open("test_text2.txt") as test_file:
+            content2 = test_file.read()
+        
+        with open("test_text3.txt") as test_file:
+            content3 = test_file.read()
+
+        self.assertEqual(content1, "cdefg")
+        self.assertEqual(content2, "34567")
+        self.assertEqual(content3, "CDEFG")
+        
+    def test_cipher_encrypt_decrypt(self):
+        """Whole process of encrypt/decrypt file works correctly"""
+
+        command = "python3 cipher_file.py encrypt 2 test_text.txt"
+        os.system(command)
+
+        with open("test_text.txt") as test_file:
+            encrypted_content = test_file.read()
+
+        self.assertEqual(encrypted_content, "cdefg")
+
+        command = "python3 cipher_file.py decrypt 2 test_text.txt"
+        os.system(command)
+
+        with open("test_text.txt") as test_file:
+            decrypted_content = test_file.read()
+
+        self.assertEqual(decrypted_content, "abcde")
+
+
 if __name__ == '__main__':
     unittest.main()

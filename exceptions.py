@@ -3,3 +3,6 @@ class CipherError(Exception):
 
 class CLIParamsError(Exception):
     pass
+
+class CipherFileError(Exception):
+    pass
